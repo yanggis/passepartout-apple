@@ -1,6 +1,7 @@
 ### Changed
 
 - Allow Oeck provider without any purchase.
+- Migrate to SwiftPM.
 
 ### Fixed
 

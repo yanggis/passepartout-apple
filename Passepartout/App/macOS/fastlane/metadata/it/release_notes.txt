@@ -1,7 +1,8 @@
 ### Changed
 
 - Allow Oeck provider without any purchase.
-- Status bar icon color had to be dropped in order to automatically adjust to desktop background color.
+- Drop status bar icon color to automatically adjust to desktop background color.
+- Migrate to SwiftPM.
 
 ### Fixed
 
