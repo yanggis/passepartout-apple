@@ -102,12 +102,10 @@ jobs:
       PILOT_BUILD_NUMBER: ${{ needs.build_upload.outputs.build }}
       PILOT_DISTRIBUTE_ONLY: true
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
         with:
           submodules: true
-      - name: Prepare Ruby bundle
-        uses: ruby/setup-ruby@v1
+      - uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
       - name: Publish on TestFlight (iOS)
@@ -131,12 +129,10 @@ jobs:
       DELIVER_BUILD_NUMBER: ${{ needs.build_upload.outputs.build }}
       DELIVER_FORCE: true
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
         with:
           submodules: true
-      - name: Prepare Ruby bundle
-        uses: ruby/setup-ruby@v1
+      - uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
       - name: Submit for App Review (iOS)
@@ -154,8 +150,7 @@ jobs:
     env:
       TAG_NAME: ${{ needs.build_upload.outputs.version }}
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
         with:
           submodules: true
       - name: Import GPG key
