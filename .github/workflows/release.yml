@@ -3,9 +3,7 @@ name: Release
 on:
   push:
     branches:
-      - "master"
-    paths:
-      - ".beta-build"
+      - "test/optimize-release"
 
 env:
   APP_STORE_CONNECT_API_KEY: ${{ secrets.APP_STORE_CONNECT_API_KEY }}
@@ -85,6 +83,7 @@ jobs:
             export PILOT_PKG="$GYM_OUTPUT_DIRECTORY/Passepartout.pkg"
           fi
           export PILOT_CHANGELOG=`ci/build-changelog.sh $PLATFORM`
+          exit
           bundle exec fastlane --env $PLATFORM,beta run pilot
     outputs:
       version: ${{ steps.app_version.outputs.version }}
@@ -112,12 +111,14 @@ jobs:
           bundler-cache: true
       - name: Publish on TestFlight (iOS)
         run: |
+          exit
           bundle exec fastlane --env ios,beta run pilot
 #      - name: Publish on TestFlight (macOS)
 #        run: |
 #          bundle exec fastlane --env mac,beta run pilot
       - name: Tag beta
         run: |
+          exit
           git tag "v$PILOT_APP_VERSION-b$PILOT_BUILD_NUMBER" && git push --tags
   submit_for_app_review:
     name: Submit to App Review
