@@ -11,18 +11,6 @@ env:
   APP_STORE_CONNECT_API_KEY: ${{ secrets.APP_STORE_CONNECT_API_KEY }}
   FASTLANE_USERNAME: ${{ secrets.FASTLANE_USERNAME }}
   FASTLANE_PASSWORD: ${{ secrets.FASTLANE_PASSWORD }}
-  MATCH_USERNAME: ${{ secrets.MATCH_USERNAME }}
-  MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
-  MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
-  MATCH_GIT_PRIVATE_KEY: ${{ secrets.MATCH_GIT_PRIVATE_KEY }}
-  MATCH_KEYCHAIN_NAME: ${{ secrets.MATCH_KEYCHAIN_NAME }}
-  MATCH_KEYCHAIN_PASSWORD: ${{ secrets.MATCH_KEYCHAIN_PASSWORD }}
-  PILOT_USERNAME: ${{ secrets.PILOT_USERNAME }}
-  PILOT_GROUPS: ${{ secrets.PILOT_GROUPS }}
-  PILOT_BETA_APP_FEEDBACK: ${{ secrets.PILOT_BETA_APP_FEEDBACK }}
-  PILOT_BETA_APP_REVIEW_INFO: ${{ secrets.PILOT_BETA_APP_REVIEW_INFO }}
-  PILOT_NOTIFY_EXTERNAL_TESTERS: ${{ secrets.PILOT_NOTIFY_EXTERNAL_TESTERS }}
-  CHANGELOG_PREFACE: ${{ secrets.CHANGELOG_PREFACE }}
 
 jobs:
   build_upload:
@@ -40,6 +28,12 @@ jobs:
             platform: "mac"
     env:
       PLATFORM: ${{ matrix.platform }}
+      MATCH_USERNAME: ${{ secrets.MATCH_USERNAME }}
+      MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+      MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
+      MATCH_GIT_PRIVATE_KEY: ${{ secrets.MATCH_GIT_PRIVATE_KEY }}
+      MATCH_KEYCHAIN_NAME: ${{ secrets.MATCH_KEYCHAIN_NAME }}
+      MATCH_KEYCHAIN_PASSWORD: ${{ secrets.MATCH_KEYCHAIN_PASSWORD }}
       GYM_OUTPUT_DIRECTORY: "dist/${{ matrix.platform }}"
     steps:
       - uses: actions/checkout@v2
@@ -77,6 +71,13 @@ jobs:
         run: |
           bundle exec fastlane --env $PLATFORM,beta test_and_build_app test:false
       - name: Submit to TestFlight
+        env:
+          PILOT_USERNAME: ${{ secrets.PILOT_USERNAME }}
+          PILOT_GROUPS: ${{ secrets.PILOT_GROUPS }}
+          PILOT_BETA_APP_FEEDBACK: ${{ secrets.PILOT_BETA_APP_FEEDBACK }}
+          PILOT_BETA_APP_REVIEW_INFO: ${{ secrets.PILOT_BETA_APP_REVIEW_INFO }}
+          PILOT_NOTIFY_EXTERNAL_TESTERS: ${{ secrets.PILOT_NOTIFY_EXTERNAL_TESTERS }}
+          CHANGELOG_PREFACE: ${{ secrets.CHANGELOG_PREFACE }}
         run: |
           if [ $PLATFORM == "ios" ]; then
             export PILOT_IPA="$GYM_OUTPUT_DIRECTORY/Passepartout.ipa"
@@ -96,10 +97,11 @@ jobs:
       name: public_beta
       url: "https://testflight.apple.com/join/K71mtLjZ"
     env:
-      PILOT_USERNAME: ${{ secrets.PILOT_USERNAME }}
-      PILOT_GROUPS: ${{ secrets.PILOT_GROUPS }}
       PILOT_APP_VERSION: ${{ needs.build_upload.outputs.version }}
       PILOT_BUILD_NUMBER: ${{ needs.build_upload.outputs.build }}
+      PILOT_USERNAME: ${{ secrets.PILOT_USERNAME }}
+      PILOT_GROUPS: ${{ secrets.PILOT_GROUPS }}
+      PILOT_NOTIFY_EXTERNAL_TESTERS: ${{ secrets.PILOT_NOTIFY_EXTERNAL_TESTERS }}
       PILOT_DISTRIBUTE_ONLY: true
     steps:
       - uses: actions/checkout@v2
